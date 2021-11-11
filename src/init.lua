@@ -128,9 +128,11 @@ function module.new(ResX: number, ResY: number)
 				end
 			end
 
-			if #Compressed > 1 then
-				createGradient(Compressed, x, pixelStart, pixelCount, colorCount)
+			if #Compressed < 2 then
+				colorCount += 1
+				table.insert(Compressed, { p = colorCount, c = Column[#Column] })
 			end
+			createGradient(Compressed, x, pixelStart, pixelCount, colorCount)
 		end
 	end
 
