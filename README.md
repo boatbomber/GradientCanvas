@@ -44,3 +44,48 @@ GreedyCanvas:Destroy()
 ```
 
 cleans up the canvas and its GUIs
+
+
+----------------------
+
+## Demonstration
+
+```Lua
+-- Frames
+local Demo = script.Parent.Demo
+local Ref = script.Parent.Ref
+
+-- Resolution
+local ResX, ResY = 16*6, 9*6
+
+-- Create Canvas
+local Canvas = require(script.GreedyCanvas).new(ResX, ResY)
+Canvas:SetParent(Demo)
+
+-- Draw pixels
+for x=1, ResX do
+	for y=1, ResY do
+		-- Define color
+		local v = math.sin(x/ResX) * math.cos(y/ResY)
+		local c = Color3.fromHSV(v, 0.9, 0.9)
+    
+		-- Set in canvas
+		Canvas:SetPixel(x, y, c)
+    
+		-- Draw naively for reference
+		local pixel = Instance.new("Frame")
+		pixel.BorderSizePixel = 0
+		pixel.BackgroundColor3 = c
+		pixel.Size = UDim2.fromScale(1/ResX, 1/ResY)
+		pixel.Position = UDim2.fromScale((1/ResX)*(x-1), (1/ResY)*(y-1))
+		pixel.Parent = Ref.Canvas
+	end
+end
+
+-- Render canvas
+Canvas:Render()
+
+-- Expose counts
+Demo.TextLabel.Text = string.format("Frames Instances: %d", Canvas._ActiveFrames)
+Ref.TextLabel.Text = string.format("Frames Instances: %d", ResX*ResY)
+```
