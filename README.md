@@ -65,14 +65,14 @@ Canvas:SetParent(Demo)
 -- Draw pixels
 for x=1, ResX do
 	for y=1, ResY do
-    -- Define color
+		-- Define color
 		local v = math.sin(x/ResX) * math.cos(y/ResY)
 		local c = Color3.fromHSV(v, 0.9, 0.9)
     
-    -- Set in canvas
+		-- Set in canvas
 		Canvas:SetPixel(x, y, c)
     
-    -- Draw naively for reference
+		-- Draw naively for reference
 		local pixel = Instance.new("Frame")
 		pixel.BorderSizePixel = 0
 		pixel.BackgroundColor3 = c
