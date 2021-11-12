@@ -5,9 +5,13 @@ local Util = require(script.Util)
 
 local LOSSY = 0.03 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
 
+local EMPTY_TABLE = {}
+
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
 		_ActiveFrames = 0,
+		_ColumnFrames = {},
+		_UpdatedColumns = {},
 	}
 
 	local invX, invY = 1 / ResX, 1 / ResY
@@ -68,6 +72,12 @@ function module.new(ResX: number, ResY: number)
 		Frame.Gradient.Color = ColorSequence.new(Sequence)
 		Frame.Parent = Container
 
+		if Canvas._ColumnFrames[x] == nil then
+			Canvas._ColumnFrames[x] = {Frame}
+		else
+			table.insert(Canvas._ColumnFrames[x], Frame)
+		end
+
 		Canvas._ActiveFrames += 1
 	end
 
@@ -82,20 +92,35 @@ function module.new(ResX: number, ResY: number)
 	end
 
 	function Canvas:SetPixel(x: number, y: number, color: Color3)
-		self._Grid[x][y] = color
+		local Col = self._Grid[x]
+
+		if Col[y] ~= color then
+			Col[y] = color
+			self._UpdatedColumns[x] = Col
+		end
 	end
 
-	function Canvas:Clear()
-		for _, object in ipairs(Container:GetChildren()) do
-			self._Pool:Return(object)
+	function Canvas:Clear(x: number?)
+		if x then
+			for _, object in ipairs(self._ColumnFrames[x] or EMPTY_TABLE) do
+				self._Pool:Return(object)
+				self._ActiveFrames -= 1
+			end
+			table.clear(self._ColumnFrames[x] or EMPTY_TABLE)
+		else
+			for _, object in ipairs(Container:GetChildren()) do
+				self._Pool:Return(object)
+			end
+			self._ActiveFrames = 0
+			table.clear(self._ColumnFrames)
 		end
-		self._ActiveFrames = 0
+
 	end
 
 	function Canvas:Render()
-		self:Clear()
+		for x, Column in pairs(self._UpdatedColumns) do
+			self:Clear(x)
 
-		for x, Column in ipairs(self._Grid) do
 			local Compressed = {
 				{ p = 0, c = Column[1] },
 			}
@@ -135,6 +160,8 @@ function module.new(ResX: number, ResY: number)
 			table.insert(Compressed, { p = pixelCount, c = lastColor })
 			createGradient(Compressed, x, pixelStart, pixelCount)
 		end
+
+		table.clear(self._UpdatedColumns)
 	end
 
 	return Canvas
