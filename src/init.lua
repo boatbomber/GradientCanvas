@@ -3,7 +3,7 @@ local module = {}
 local GuiPool = require(script.GuiPool)
 local Util = require(script.Util)
 
-local LOSSY = 0.09 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
+local LOSSY = 0.06 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
 
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
@@ -34,7 +34,7 @@ function module.new(ResX: number, ResY: number)
 		Gradient.Rotation = 90
 		Gradient.Parent = Pixel
 
-		Canvas._Pool = GuiPool.new(Pixel, 50)
+		Canvas._Pool = GuiPool.new(Pixel, ResX)
 		Pixel:Destroy()
 	end
 
@@ -109,8 +109,8 @@ function module.new(ResX: number, ResY: number)
 				if lastColor ~= Color then
 					local offset = y - pixelStart - 1
 
-					if not Util.FuzzyColorMatch(lastColor, Color, LOSSY) then
-						table.insert(Compressed, { p = offset - 0.01, c = lastColor })
+					if Util.DeltaRGB(lastColor, Color) > LOSSY then
+						table.insert(Compressed, { p = offset - 0.02, c = lastColor })
 					end
 					table.insert(Compressed, { p = offset, c = Color })
 
