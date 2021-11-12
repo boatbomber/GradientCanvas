@@ -3,7 +3,7 @@ local module = {}
 local GuiPool = require(script.GuiPool)
 local Util = require(script.Util)
 
-local LOSSY = 0.06 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
+local LOSSY = 0.03 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
 
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
@@ -106,10 +106,11 @@ function module.new(ResX: number, ResY: number)
 			-- Compress into gradients
 			for y, Color in ipairs(Column) do
 				pixelCount += 1
-				if lastColor ~= Color then
+				local delta = Util.DeltaRGB(lastColor, Color)
+				if delta > 0.015 then
 					local offset = y - pixelStart - 1
 
-					if Util.DeltaRGB(lastColor, Color) > LOSSY then
+					if delta > 0.015+LOSSY then
 						table.insert(Compressed, { p = offset - 0.02, c = lastColor })
 					end
 					table.insert(Compressed, { p = offset, c = Color })
