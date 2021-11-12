@@ -1,5 +1,7 @@
 local module = {}
 
+local OFF_SCREEN = UDim2.fromOffset(0,3000)
+
 function module.new(original: GuiObject, initSize: number?)
 	local Pool = {
 		_Available = table.create(initSize or 50),
@@ -22,7 +24,7 @@ function module.new(original: GuiObject, initSize: number?)
 	end
 
 	function Pool:Return(object: GuiObject)
-		object.Position = UDim2.fromOffset(0, math.huge)
+		object.Position = OFF_SCREEN
 		table.insert(self._Available, object)
 	end
 
