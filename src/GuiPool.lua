@@ -1,6 +1,6 @@
 local module = {}
 
-local OFF_SCREEN = UDim2.fromOffset(0,3000)
+local OFF_SCREEN = UDim2.fromOffset(0, 3000)
 
 function module.new(original: GuiObject, initSize: number?)
 	local Pool = {

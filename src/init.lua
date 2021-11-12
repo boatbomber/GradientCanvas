@@ -3,8 +3,6 @@ local module = {}
 local GuiPool = require(script.GuiPool)
 local Util = require(script.Util)
 
-local LOSSY = 0.03 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
-
 local EMPTY_TABLE = {}
 
 function module.new(ResX: number, ResY: number)
@@ -15,6 +13,8 @@ function module.new(ResX: number, ResY: number)
 	}
 
 	local invX, invY = 1 / ResX, 1 / ResY
+	local diff = 0.015
+	local lossy = math.clamp(diff + ResY / 250, 0.02, 1)
 
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
@@ -73,7 +73,7 @@ function module.new(ResX: number, ResY: number)
 		Frame.Parent = Container
 
 		if Canvas._ColumnFrames[x] == nil then
-			Canvas._ColumnFrames[x] = {Frame}
+			Canvas._ColumnFrames[x] = { Frame }
 		else
 			table.insert(Canvas._ColumnFrames[x], Frame)
 		end
@@ -114,7 +114,6 @@ function module.new(ResX: number, ResY: number)
 			self._ActiveFrames = 0
 			table.clear(self._ColumnFrames)
 		end
-
 	end
 
 	function Canvas:Render()
@@ -132,10 +131,10 @@ function module.new(ResX: number, ResY: number)
 			for y, Color in ipairs(Column) do
 				pixelCount += 1
 				local delta = Util.DeltaRGB(lastColor, Color)
-				if delta > 0.015 then
+				if delta > diff then
 					local offset = y - pixelStart - 1
 
-					if delta > 0.015+LOSSY then
+					if delta > lossy then
 						table.insert(Compressed, { p = offset - 0.02, c = lastColor })
 					end
 					table.insert(Compressed, { p = offset, c = Color })
