@@ -3,7 +3,7 @@ local module = {}
 local GuiPool = require(script.GuiPool)
 local Util = require(script.Util)
 
-local LOSSY = 0.07 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
+local LOSSY = 0.09 -- Use fewer Frames at cost of image accuracy (Some values get funky, tweak carefully)
 
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
@@ -56,10 +56,10 @@ function module.new(ResX: number, ResY: number)
 	Container.Parent = Gui
 
 	-- Define API
-	local function createGradient(colorData, x, pixelStart, pixelCount, colorCount)
+	local function createGradient(colorData, x, pixelStart, pixelCount)
 		local Sequence = table.create(#colorData)
 		for i, data in ipairs(colorData) do
-			Sequence[i] = ColorSequenceKeypoint.new(data.p / colorCount, data.c)
+			Sequence[i] = ColorSequenceKeypoint.new(data.p / pixelCount, data.c)
 		end
 
 		local Frame = Canvas._Pool:Get()
@@ -100,39 +100,39 @@ function module.new(ResX: number, ResY: number)
 				{ p = 0, c = Column[1] },
 			}
 
-			local pixelStart, pixelCount, colorCount = 0, 0, 0
+			local pixelStart, pixelCount = 0, 0
 			local lastColor = Column[1]
 
 			-- Compress into gradients
 			for y, Color in ipairs(Column) do
 				pixelCount += 1
 				if lastColor ~= Color then
-					colorCount += 1
+					local offset = y - pixelStart - 1
 
 					if not Util.FuzzyColorMatch(lastColor, Color, LOSSY) then
-						table.insert(Compressed, { p = colorCount - 0.001, c = lastColor })
+						table.insert(Compressed, { p = offset - 0.01, c = lastColor })
 					end
-					table.insert(Compressed, { p = colorCount, c = Color })
+					table.insert(Compressed, { p = offset, c = Color })
 
 					lastColor = Color
 
-					if #Compressed > 18 then
-						createGradient(Compressed, x, pixelStart, pixelCount, colorCount)
+					if #Compressed > 17 then
+						table.insert(Compressed, { p = pixelCount, c = Color })
+						createGradient(Compressed, x, pixelStart, pixelCount)
 
-						pixelStart = y
+						pixelStart = y - 1
 						pixelCount = 0
-						colorCount = 0
 						table.clear(Compressed)
 						Compressed[1] = { p = 0, c = Color }
 					end
 				end
 			end
 
-			if #Compressed < 2 then
-				colorCount += 1
-				table.insert(Compressed, { p = colorCount, c = Column[#Column] })
+			if pixelCount + pixelStart ~= ResY then
+				pixelCount += 1
 			end
-			createGradient(Compressed, x, pixelStart, pixelCount, colorCount)
+			table.insert(Compressed, { p = pixelCount, c = lastColor })
+			createGradient(Compressed, x, pixelStart, pixelCount)
 		end
 	end
 
