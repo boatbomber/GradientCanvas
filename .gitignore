@@ -3,11 +3,12 @@
 /*.rbxmx
 
 # Project place file
+/*.rbxl
 /*.rbxlx
 
 # Roblox Studio lock files
-/*.rbxlx.lock
 /*.rbxl.lock
+/*.rbxlx.lock
 
 # VS Code files
 .vscode/*
