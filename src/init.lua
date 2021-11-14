@@ -19,11 +19,7 @@ function module.new(ResX: number, ResY: number)
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
 	for x = 1, ResX do
-		local Col = table.create(ResY)
-		for y = 1, ResY do
-			Col[y] = Color3.new(1, 1, 1)
-		end
-		Grid[x] = Col
+		Grid[x] = table.create(ResY, Color3.new(1, 1, 1))
 	end
 	Canvas._Grid = Grid
 
