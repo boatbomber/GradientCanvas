@@ -14,27 +14,9 @@ function Util.RGBtoLAB(c)
 	do -- Convert RGB to XYZ
 		local r, g, b = c.R, c.G, c.B
 
-		if r > 0.04045 then
-			r = ((r + 0.055) / 1.055) ^ 2.4
-		else
-			r /= 12.92
-		end
-
-		if g > 0.04045 then
-			g = ((g + 0.055) / 1.055) ^ 2.4
-		else
-			g /= 12.92
-		end
-
-		if b > 0.04045 then
-			b = ((b + 0.055) / 1.055) ^ 2.4
-		else
-			b /= 12.92
-		end
-
-		r *= 100
-		g *= 100
-		b *= 100
+		r = if r > 0.04045 then (((r + 0.055) / 1.055) ^ 2.4) * 100 else r / 0.1292
+		g = if g > 0.04045 then (((g + 0.055) / 1.055) ^ 2.4) * 100 else g / 0.1292
+		b = if b > 0.04045 then (((b + 0.055) / 1.055) ^ 2.4) * 100 else b / 0.1292
 
 		X = 0.4124 * r + 0.3576 * g + 0.1805 * b
 		Y = 0.2126 * r + 0.7152 * g + 0.0722 * b
@@ -45,23 +27,9 @@ function Util.RGBtoLAB(c)
 	do -- Convert XYZ to LAB
 		local xr, yr, zr = X / Xr, Y / Yr, Z / Zr
 
-		if xr > 0.008856 then
-			xr = xr ^ (1 / 3)
-		else
-			xr = ((7.787 * xr) + 16 / 116.0)
-		end
-
-		if yr > 0.008856 then
-			yr = yr ^ (1 / 3)
-		else
-			yr = ((7.787 * yr) + 16 / 116.0)
-		end
-
-		if zr > 0.008856 then
-			zr = zr ^ (1 / 3)
-		else
-			zr = ((7.787 * zr) + 16 / 116.0)
-		end
+		xr = if xr > 0.008856 then xr ^ (1 / 3) else ((7.787 * xr) + 0.13793103448276)
+		yr = if yr > 0.008856 then yr ^ (1 / 3) else ((7.787 * yr) + 0.13793103448276)
+		zr = if zr > 0.008856 then zr ^ (1 / 3) else ((7.787 * zr) + 0.13793103448276)
 
 		l, a, b = (116 * yr) - 16, 500 * (xr - yr), 200 * (yr - zr)
 	end
