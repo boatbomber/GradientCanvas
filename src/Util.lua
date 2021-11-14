@@ -75,11 +75,11 @@ function Util.DeltaRGB(a: Color3, b: Color3)
 	local l1, a1, b1 = Util.RGBtoLAB(a)
 	local l2, a2, b2 = Util.RGBtoLAB(b)
 
-	local delta = math.sqrt((l2 - l1) ^ 2 + (a2 - a1) ^ 2 + (b2 - b1) ^ 2)
-	if delta < 30 then
+	local delta = (l2 - l1) ^ 2 + (a2 - a1) ^ 2 + (b2 - b1) ^ 2
+	if delta < 900 then
 		return 0.03
 	else
-		return delta / 200
+		return delta / 40000
 	end
 end
 
