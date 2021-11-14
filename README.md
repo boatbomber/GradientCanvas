@@ -1,9 +1,9 @@
 # GreedyCanvas
 A canvas renderer using greedy gradients to draw efficiently in Roblox
 
-![image](https://user-images.githubusercontent.com/40185666/141372376-4b093c65-546e-438c-80e6-72ce05a7c0eb.png)
+![image](https://user-images.githubusercontent.com/40185666/141671225-96d248d2-3795-4411-8ec6-e74a7c3157e3.png)
 
-![image](https://user-images.githubusercontent.com/40185666/141403702-300d5e6f-d6f8-4a3e-9ab7-7758c138682a.png)
+![image](https://user-images.githubusercontent.com/40185666/141671239-566f17bb-0378-4e21-b819-b8f949e9dfcf.png)
 
 
 ## API
