@@ -102,11 +102,14 @@ function module.new(ResX: number, ResY: number)
 
 	function Canvas:Clear(x: number?)
 		if x then
-			for _, object in ipairs(self._ColumnFrames[x] or EMPTY_TABLE) do
+			local column = self._ColumnFrames[x]
+			if column == nil then return end
+
+			for _, object in ipairs(column) do
 				self._Pool:Return(object)
 				self._ActiveFrames -= 1
 			end
-			table.clear(self._ColumnFrames[x] or EMPTY_TABLE)
+			table.clear(column)
 		else
 			for _, object in ipairs(Container:GetChildren()) do
 				self._Pool:Return(object)
@@ -117,38 +120,47 @@ function module.new(ResX: number, ResY: number)
 	end
 
 	function Canvas:Render()
-		for x, Column in pairs(self._UpdatedColumns) do
+		for x, column in pairs(self._UpdatedColumns) do
 			self:Clear(x)
 
-			local Compressed = {
-				{ p = 0, c = Column[1] },
+			local colorCount, colorData = 1, {
+				{ p = 0, c = column[1] },
 			}
 
 			local pixelStart, pixelCount = 0, 0
-			local lastColor = Column[1]
+			local lastColor = column[1]
 
 			-- Compress into gradients
-			for y, Color in ipairs(Column) do
+			for y, color in ipairs(column) do
 				pixelCount += 1
-				local delta = Util.DeltaRGB(lastColor, Color)
+
+				-- Early exit to avoid the delta check on direct equality
+				if lastColor == color then
+					continue
+				end
+
+				local delta = Util.DeltaRGB(lastColor, color)
 				if delta > diff then
 					local offset = y - pixelStart - 1
 
 					if delta > lossy then
-						table.insert(Compressed, { p = offset - 0.02, c = lastColor })
+						table.insert(colorData, { p = offset - 0.02, c = lastColor })
+						colorCount += 1
 					end
-					table.insert(Compressed, { p = offset, c = Color })
+					table.insert(colorData, { p = offset, c = color })
+					colorCount += 1
 
-					lastColor = Color
+					lastColor = color
 
-					if #Compressed > 17 then
-						table.insert(Compressed, { p = pixelCount, c = Color })
-						createGradient(Compressed, x, pixelStart, pixelCount)
+					if colorCount > 17 then
+						table.insert(colorData, { p = pixelCount, c = color })
+						createGradient(colorData, x, pixelStart, pixelCount)
 
 						pixelStart = y - 1
 						pixelCount = 0
-						table.clear(Compressed)
-						Compressed[1] = { p = 0, c = Color }
+						colorCount = 1
+						table.clear(colorData)
+						colorData[1] = { p = 0, c = color }
 					end
 				end
 			end
@@ -156,8 +168,8 @@ function module.new(ResX: number, ResY: number)
 			if pixelCount + pixelStart ~= ResY then
 				pixelCount += 1
 			end
-			table.insert(Compressed, { p = pixelCount, c = lastColor })
-			createGradient(Compressed, x, pixelStart, pixelCount)
+			table.insert(colorData, { p = pixelCount, c = lastColor })
+			createGradient(colorData, x, pixelStart, pixelCount)
 		end
 
 		table.clear(self._UpdatedColumns)
