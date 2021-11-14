@@ -3,8 +3,6 @@ local module = {}
 local GuiPool = require(script.GuiPool)
 local Util = require(script.Util)
 
-local EMPTY_TABLE = {}
-
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
 		_ActiveFrames = 0,
@@ -14,7 +12,7 @@ function module.new(ResX: number, ResY: number)
 
 	local invX, invY = 1 / ResX, 1 / ResY
 	local diff = 0.015
-	local lossy = math.clamp(diff + ResY / 250, 0.02, 1)
+	local lossy = diff + (0.8 * ((ResY / 250)^2.5) + 0.02)
 
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
