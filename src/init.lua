@@ -11,6 +11,7 @@ function module.new(ResX: number, ResY: number)
 	}
 
 	local invX, invY = 1 / ResX, 1 / ResY
+	local dist = ResY * 0.03
 	local diff = 0.015
 	local lossy = diff + math.clamp(0.5 * (ResY / 250)^2, 0, 0.6)
 
@@ -121,7 +122,7 @@ function module.new(ResX: number, ResY: number)
 				{ p = 0, c = column[1] },
 			}
 
-			local pixelStart, pixelCount = 0, 0
+			local pixelStart, lastPixel, pixelCount = 0, 0, 0
 			local lastColor = column[1]
 
 			-- Compress into gradients
@@ -137,7 +138,7 @@ function module.new(ResX: number, ResY: number)
 				if delta > diff then
 					local offset = y - pixelStart - 1
 
-					if delta > lossy then
+					if (delta > lossy) or (y-lastPixel > dist) then
 						table.insert(colorData, { p = offset - 0.02, c = lastColor })
 						colorCount += 1
 					end
@@ -145,6 +146,7 @@ function module.new(ResX: number, ResY: number)
 					colorCount += 1
 
 					lastColor = color
+					lastPixel = y
 
 					if colorCount > 17 then
 						table.insert(colorData, { p = pixelCount, c = color })
