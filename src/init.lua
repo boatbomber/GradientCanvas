@@ -12,7 +12,7 @@ function module.new(ResX: number, ResY: number)
 
 	local invX, invY = 1 / ResX, 1 / ResY
 	local diff = 0.015
-	local lossy = diff + (0.8 * ((ResY / 250)^2.5) + 0.02)
+	local lossy = diff + math.clamp(0.5 * (ResY / 250)^2, 0, 0.6)
 
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
