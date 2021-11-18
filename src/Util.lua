@@ -45,7 +45,7 @@ function Util.DeltaRGB(a: Color3, b: Color3)
 
 	local delta = (l2 - l1) ^ 2 + (a2 - a1) ^ 2 + (b2 - b1) ^ 2
 	if delta < 900 then
-		return 0.03
+		return 0.02
 	else
 		return delta / 40000
 	end
