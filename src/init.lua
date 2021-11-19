@@ -139,7 +139,7 @@ function module.new(ResX: number, ResY: number)
 					local offset = y - pixelStart - 1
 
 					if (delta > lossy) or (y-lastPixel > dist) then
-						table.insert(colorData, { p = offset - 0.02, c = lastColor })
+						table.insert(colorData, { p = offset - 0.08, c = lastColor })
 						colorCount += 1
 					end
 					table.insert(colorData, { p = offset, c = color })
