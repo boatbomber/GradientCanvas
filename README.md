@@ -1,4 +1,4 @@
-!! **Deprecated in favor of [ViewportCanvas](https://github.com/boatbomber/ViewportCanvas) due to hitting Roblox UIGradient cap**
+!! **Deprecated in favor of [ViewportCanvas](https://github.com/boatbomber/ViewportCanvas) due to hitting Roblox UIGradient cap. If you are doing animations, however, it is still recommended to use GreedyCanvas since Roblox takes too long to render ViewportCanvas and can't do animated images.**
 
 # GreedyCanvas
 A canvas renderer using greedy gradients to draw efficiently in Roblox
