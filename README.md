@@ -1,3 +1,5 @@
+!! **Deprecated in favor of [ViewportCanvas](https://github.com/boatbomber/ViewportCanvas) due to hitting Roblox UIGradient cap**
+
 # GreedyCanvas
 A canvas renderer using greedy gradients to draw efficiently in Roblox
 
