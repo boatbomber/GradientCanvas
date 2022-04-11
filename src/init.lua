@@ -5,15 +5,16 @@ local Util = require(script.Util)
 
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
-		_ActiveFrames = 0,
+		_Active = 0,
 		_ColumnFrames = {},
 		_UpdatedColumns = {},
+
+		Threshold = 2,
+		LossyThreshold = 4,
 	}
 
 	local invX, invY = 1 / ResX, 1 / ResY
 	local dist = ResY * 0.03
-	local diff = 0.015
-	local lossy = diff + math.clamp(0.5 * (ResY / 250)^2, 0, 0.6)
 
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
@@ -73,7 +74,7 @@ function module.new(ResX: number, ResY: number)
 			table.insert(Canvas._ColumnFrames[x], Frame)
 		end
 
-		Canvas._ActiveFrames += 1
+		Canvas._Active += 1
 	end
 
 	function Canvas:Destroy()
@@ -102,14 +103,14 @@ function module.new(ResX: number, ResY: number)
 
 			for _, object in ipairs(column) do
 				self._Pool:Return(object)
-				self._ActiveFrames -= 1
+				self._Active -= 1
 			end
 			table.clear(column)
 		else
 			for _, object in ipairs(Container:GetChildren()) do
 				self._Pool:Return(object)
 			end
-			self._ActiveFrames = 0
+			self._Active = 0
 			table.clear(self._ColumnFrames)
 		end
 	end
@@ -135,10 +136,10 @@ function module.new(ResX: number, ResY: number)
 				end
 
 				local delta = Util.DeltaRGB(lastColor, color)
-				if delta > diff then
+				if delta > self.Threshold then
 					local offset = y - pixelStart - 1
 
-					if (delta > lossy) or (y-lastPixel > dist) then
+					if (delta > self.LossyThreshold) or (y-lastPixel > dist) then
 						table.insert(colorData, { p = offset - 0.08, c = lastColor })
 						colorCount += 1
 					end
