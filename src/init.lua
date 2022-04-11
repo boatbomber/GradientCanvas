@@ -40,7 +40,7 @@ function module.new(ResX: number, ResY: number)
 
 	-- Create GUIs
 	local Gui = Instance.new("Frame")
-	Gui.Name = "GreedyCanvas"
+	Gui.Name = "GradientCanvas"
 	Gui.BackgroundTransparency = 1
 	Gui.ClipsDescendants = true
 	Gui.Size = UDim2.fromScale(1, 1)

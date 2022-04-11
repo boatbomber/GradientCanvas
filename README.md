@@ -1,6 +1,6 @@
-!! **Deprecated in favor of [ViewportCanvas](https://github.com/boatbomber/ViewportCanvas) due to hitting Roblox UIGradient cap. If you are doing animations, however, it is still recommended to use GreedyCanvas since Roblox takes too long to render ViewportCanvas and can't do animated images.**
+!! **Deprecated in favor of [ViewportCanvas](https://github.com/boatbomber/ViewportCanvas) due to hitting Roblox UIGradient cap. If you are doing animations, however, it is still recommended to use GradientCanvas since Roblox takes too long to render ViewportCanvas and can't do animated images.**
 
-# GreedyCanvas
+# GradientCanvas
 A canvas renderer using greedy gradients to draw efficiently in Roblox
 
 ![image](https://user-images.githubusercontent.com/40185666/141671225-96d248d2-3795-4411-8ec6-e74a7c3157e3.png)
@@ -11,26 +11,26 @@ A canvas renderer using greedy gradients to draw efficiently in Roblox
 ## API
 
 ```Lua
-GreedyCanvas.new(ResolutionX: number, ResolutionY: number)
+GradientCanvas.new(ResolutionX: number, ResolutionY: number)
 ```
 
 returns a new canvas of the specified resolution
 
 
 ```Lua
-GreedyCanvas:SetParent(Parent: Instance)
+GradientCanvas:SetParent(Parent: Instance)
 ```
 
 parents the canvas GUI to the passed Instance
 
 ```Lua
-GreedyCanvas:SetPixel(X: number, Y: number, Color: Color3)
+GradientCanvas:SetPixel(X: number, Y: number, Color: Color3)
 ```
 
 Sets the color of the canvas specified pixel
 
 ```Lua
-GreedyCanvas:Render()
+GradientCanvas:Render()
 ```
 
 renders the canvas based on the set pixels
@@ -38,14 +38,14 @@ renders the canvas based on the set pixels
 **(It will not automatically render, you must call this method when you've completed your pixel updates)**
 
 ```Lua
-GreedyCanvas:Clear()
+GradientCanvas:Clear()
 ```
 
 clears the canvas render
 
 
 ```Lua
-GreedyCanvas:Destroy()
+GradientCanvas:Destroy()
 ```
 
 cleans up the canvas and its GUIs
@@ -64,7 +64,7 @@ local Ref = script.Parent.Ref
 local ResX, ResY = 16*6, 9*6
 
 -- Create Canvas
-local Canvas = require(script.GreedyCanvas).new(ResX, ResY)
+local Canvas = require(script.GradientCanvas).new(ResX, ResY)
 Canvas:SetParent(Demo)
 
 -- Draw pixels
@@ -73,10 +73,10 @@ for x=1, ResX do
 		-- Define color
 		local v = math.sin(x/ResX) * math.cos(y/ResY)
 		local c = Color3.fromHSV(v, 0.9, 0.9)
-    
+
 		-- Set in canvas
 		Canvas:SetPixel(x, y, c)
-    
+
 		-- Draw naively for reference
 		local pixel = Instance.new("Frame")
 		pixel.BorderSizePixel = 0
