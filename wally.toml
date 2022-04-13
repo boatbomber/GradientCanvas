@@ -1,5 +1,5 @@
 [package]
-name = "boatbomber/GradientCanvas"
+name = "boatbomber/gradientcanvas"
 description = "A canvas renderer using greedy gradients to draw efficiently in Roblox"
 version = "0.1.8"
 license = "MIT"
